@@ -1,12 +1,25 @@
-import React from "react";
-import { StyleSheet, View, Button, TextInput, SafeAreaView, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Button, TextInput, SafeAreaView, KeyboardAvoidingView, Platform, Text, ScrollView } from "react-native";
 
 const TextInputScreen = () => {
+  const [text, setText] = useState("");
+  const [history, setHistory] = useState([]);
+
+  const handleSend = () => {
+    if (text) {
+      setHistory([...history, text]);
+      setText("");
+    }
+  };
+
   return <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+        <ScrollView style={styles.historyContainer}>
+          {history.map((item, index) => <Text key={index} style={styles.historyText}>{item}</Text>)}
+        </ScrollView>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} placeholder="Type here..." />
-          <Button title="Send" onPress={() => {}} />
+          <TextInput style={styles.input} placeholder="Type here..." value={text} onChangeText={setText} />
+          <Button title="Send" onPress={handleSend} />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>;
@@ -19,6 +32,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end"
+  },
+  historyContainer: {
+    flex: 1,
+    paddingHorizontal: 10
+  },
+  historyText: {
+    fontSize: 16,
+    marginVertical: 4
   },
   inputContainer: {
     marginBottom: 36,
